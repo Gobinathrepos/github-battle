@@ -4,7 +4,7 @@ import { fetchPopularRepos } from '../utils/api';
 
 // Here I'm seperately using a component call LanguagesNav
 function LanguagesNav ({selected, onUpdateLanguage}) {
-    const languages = ['All', 'CSS', 'Javascript', 'Python', 'Node']
+    const languages = ['All', 'CSS', 'Javascript', 'Python', 'Node', 'Ruby']
         return (
             <ul className='flex-center'>
                 {languages.map((language) => <li key={language}>
@@ -32,7 +32,8 @@ export default class Popular extends React.Component {
         this.state = {
                 selectedLanguage: 'All',
                 error: null,
-                repos: null,
+                // This repos which is now a object itself where the selectedLanguage is a key to cache the repository
+                repos: {},
                 // when the screen is loading then error and repos should be null
             }
             this.updateLanguage = this.updateLanguage.bind(this)
@@ -48,26 +49,31 @@ export default class Popular extends React.Component {
         this.setState({
             selectedLanguage,
             error: null,
-            repos: null,
+            // Because of caching we don't want the repos to none
         })
-
-
-        fetchPopularRepos(selectedLanguage)
-            .then((repos) => this.setState({
-                repos,
-                error: null,
-            }))
-            //  using catch for updating the UI
-            .catch((error) => {console.log('error fetching repos!', error)
-
-            this.setState({
-                error: `There is a error in fetching the repos.`
+        // only fetch if the selectedLanguage is doesn't exist
+        if(!this.state.repos[selectedLanguage]) {
+            fetchPopularRepos(selectedLanguage)
+                .then((data) => {
+                    this.setState(({ repos }) => ({
+                        repos: {
+                            ...repos,
+                            [selectedLanguage]: data
+                        }
+                    }))
+                })
+                //  using catch for updating the UI
+                .catch((error) => {console.warn('error fetching repos!', error)
+                this.setState({
+                    error: `There is a error in fetching the repos.`
+                })
             })
-        })
+        }
     }
 
     isLoading() {
-        return this.state.repos === null && this.state.error === null
+        const {selectedLanguage, repos, error} = this.state;
+        return !repos[selectedLanguage] && error === null
     }
 
     render() {
@@ -83,7 +89,7 @@ export default class Popular extends React.Component {
 
             {this.isLoading() && <p>Loading...</p>}
 
-            {repos && <pre>{JSON.stringify(repos, null, 2)}</pre>}
+            {repos[selectedLanguage] && <pre>{JSON.stringify(repos[selectedLanguage], null, 2)}</pre>}
 
             {error && <p>{error}</p>}
         </React.Fragment>
