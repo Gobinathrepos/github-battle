@@ -1,9 +1,10 @@
 import Popular from "./components/Popular";
+import Battle from "./components/Battle";
 
 function App() {
   return (
     <div className="container">
-      <Popular />
+      <Battle />
     </div>
   );
 }

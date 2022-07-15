@@ -5,7 +5,7 @@ import { FaUser, FaStar, FaCodeBranch, FaExclamationTriangle } from 'react-icons
 
 // Here I'm seperately using a component call LanguagesNav
 function LanguagesNav ({selected, onUpdateLanguage}) {
-    const languages = ['All', 'CSS', 'Javascript', 'Python', 'Node', 'Ruby']
+    const languages = ['All', 'CSS', 'Javascript', 'React', 'Node', 'Python', 'Ruby']
         return (
             <ul className='flex-center'>
                 {languages.map((language) => <li key={language}>
