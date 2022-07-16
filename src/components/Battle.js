@@ -25,6 +25,56 @@ function Instruction() {
     )
 }
 
+class PlayerBattle extends react.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            username: ''
+        }
+
+        this.handleSubmit = this.handleSubmit.bind(this)
+    }
+
+    handleSubmit(event) {
+        // normal brower event will be prevent
+        event.preventDefault()
+
+        this.props.onSubmit(this.state.username);
+    }
+
+    handleChange(event) {
+        this.setState({
+            username: event.target.value
+        })
+    }
+    render() {
+        return (
+            <form className='column player' onSubmit={this.handleSubmit()}>
+                <label htmlFor='username' className='player-label'>
+                    {this.props.label}
+                </label>
+                {/* This is controllable State
+                    Here the value in the input is on the local state
+
+                    Inorder to update the value we need to update the local state
+                    we do that by using onChange
+                 */}
+                <div className='row player-inputs'>
+                    <input
+                        type='text'
+                        id='username'
+                        className='input-light'
+                        placeholder='github username'
+                        value={this.state.username}
+                        onChange={this.handleChange}
+                        autoComplete='off'
+                    />
+                </div>
+            </form>
+        )
+    }
+}
 export default class Battle extends React.Component {
     render() {
         return (
